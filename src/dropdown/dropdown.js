@@ -44,6 +44,7 @@ angular.module('ui.bootstrap.dropdown', [])
   };
 
   var escapeKeyBind = function( evt ) {
+    evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
     if ( evt.which === 27 ) {
       openScope.focusToggleElement();
       closeDropdown();

@@ -221,6 +221,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
       $document.bind('keydown', function (evt) {
         var modal;
 
+        evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
         if (evt.which === 27) {
           modal = openedWindows.top();
           if (modal && modal.value.keyboard) {

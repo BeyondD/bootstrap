@@ -48,6 +48,7 @@ angular.module('ui.bootstrap.rating', [])
   };
 
   $scope.onKeydown = function(evt) {
+    evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
     if (/(37|38|39|40)/.test(evt.which)) {
       evt.preventDefault();
       evt.stopPropagation();

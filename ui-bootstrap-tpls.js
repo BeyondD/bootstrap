@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * http://angular-ui.github.io/bootstrap/
 
- * Version: 0.12.0-ALZ - 2014-11-11
+ * Version: 0.12.0-ALZ - 2014-11-12
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
@@ -1142,6 +1142,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
   $scope.$on('datepicker.focus', focusElement);
 
   $scope.keydown = function( evt ) {
+    evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
     var key = $scope.keys[evt.which];
 
     if ( !key || evt.shiftKey || evt.altKey ) {
@@ -1555,6 +1556,7 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
       element.bind('keydown', keydown);
 
       scope.keydown = function(evt) {
+        evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
         if (evt.which === 27) {
           evt.preventDefault();
           evt.stopPropagation();
@@ -1675,6 +1677,7 @@ angular.module('ui.bootstrap.dropdown', [])
   };
 
   var escapeKeyBind = function( evt ) {
+    evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
     if ( evt.which === 27 ) {
       openScope.focusToggleElement();
       closeDropdown();
@@ -2014,6 +2017,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
       $document.bind('keydown', function (evt) {
         var modal;
 
+        evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
         if (evt.which === 27) {
           modal = openedWindows.top();
           if (modal && modal.value.keyboard) {
@@ -2935,6 +2939,7 @@ angular.module('ui.bootstrap.rating', [])
   };
 
   $scope.onKeydown = function(evt) {
+    evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
     if (/(37|38|39|40)/.test(evt.which)) {
       evt.preventDefault();
       evt.stopPropagation();
@@ -3773,6 +3778,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
       //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27)
       element.bind('keydown', function (evt) {
+        evt.which = evt.which ? evt.which : ( evt.charCode ? evt.charCode : evt.keyCode); // normalise for IE8
 
         //typeahead is open and an "interesting" key was pressed
         if (scope.matches.length === 0 || HOT_KEYS.indexOf(evt.which) === -1) {
