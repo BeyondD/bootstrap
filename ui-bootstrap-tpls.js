@@ -3846,7 +3846,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
         matches:'=',
         query:'=',
         active:'=',
-        position:'=',
+        position:'=?',
         select:'&'
       },
       replace:true,
@@ -3854,7 +3854,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       link:function (scope, element, attrs) {
 
         scope.templateUrl = attrs.templateUrl;
-        //scope.position = {top: 0, left: 0, width: 0, height: 0}; // Initialise position due to IE8 bug
+        scope.position = {top: 0, left: 0, width: 0, height: 0}; // Initialise position due to IE8 bug
 
         scope.isOpen = function () {
           return scope.matches.length > 0;

@@ -16,13 +16,21 @@ describe('position elements', function () {
     $position = _$position_;
   }));
   beforeEach(function () {
-    this.addMatchers({
-      toBePositionedAt: function(top, left) {
-        this.message = function() {
-          return 'Expected "('  + this.actual.top + ', ' + this.actual.left +  ')" to be positioned at (' + top + ', ' + left + ')';
-        };
+    jasmine.addMatchers({
+      toBePositionedAt: function() {
+        return {
+          compare: function(actual, top, left) {
+            var result = {};
 
-        return this.actual.top == top && this.actual.left == left;
+            result.pass = actual.top == top && actual.left == left;
+
+            result.message = function() {
+              return 'Expected "('  + this.actual.top + ', ' + this.actual.left +  ')" to be positioned at (' + top + ', ' + left + ')';
+            };
+
+            return result;
+          }
+        };
       }
     });
   });

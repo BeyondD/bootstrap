@@ -64,28 +64,43 @@ describe('typeahead tests', function () {
 
   //custom matchers
   beforeEach(function () {
-    this.addMatchers({
-      toBeClosed: function () {
-        var typeaheadEl = findDropDown(this.actual);
-        this.message = function () {
-          return 'Expected "' + angular.mock.dump(typeaheadEl) + '" to be closed.';
+    jasmine.addMatchers({
+      toBeClosed: function() {
+        return {
+          compare: function (actual) {
+            var typeaheadEl = findDropDown(actual),
+              result = {};
+
+            result.pass = typeaheadEl.hasClass('ng-hide') === true;
+            result.message = function () {
+              return 'Expected "' + angular.mock.dump(typeaheadEl) + '" to be closed.';
+            };
+
+            return result;
+
+          }
         };
-        return typeaheadEl.hasClass('ng-hide') === true;
+      },
+      toBeOpenWithActive: function() {
+        return {
+          compare: function(actual, noOfMatches, activeIdx) {
+            var typeaheadEl = findDropDown(actual),
+              liEls = findMatches(actual),
+              result = {};
 
-      }, toBeOpenWithActive: function (noOfMatches, activeIdx) {
+            result.pass = (typeaheadEl.length === 1 &&
+              typeaheadEl.hasClass('ng-hide') === false &&
+              liEls.length === noOfMatches &&
+              (activeIdx === -1 ? !$(liEls).hasClass('active') : $(liEls[activeIdx]).hasClass('active'))
+              );
 
-        var typeaheadEl = findDropDown(this.actual);
-        var liEls = findMatches(this.actual);
+            result.message = function () {
+              return 'Expected "' + actual + '" to be opened.';
+            };
 
-        this.message = function () {
-          return 'Expected "' + this.actual + '" to be opened.';
+            return result;
+          }
         };
-
-        return (typeaheadEl.length === 1 &&
-                typeaheadEl.hasClass('ng-hide') === false &&
-                liEls.length === noOfMatches &&
-                (activeIdx === -1 ? !$(liEls).hasClass('active') : $(liEls[activeIdx]).hasClass('active'))
-               );
       }
     });
   });
@@ -591,8 +606,6 @@ describe('typeahead tests', function () {
 
       // Note that this bug can only be found when element is in the document
       $document.find('body').append(element);
-      // Extra teardown for this spec
-      this.after(function () { element.remove(); });
 
       changeInputValueTo(element, 'b');
 
@@ -600,6 +613,7 @@ describe('typeahead tests', function () {
       $scope.$digest();
 
       expect(element).toBeOpenWithActive(2, 0);
+      element.remove();
     });
 
     it('issue #1238 - allow names like "query" to be used inside "in" expressions ', function () {
@@ -621,14 +635,13 @@ describe('typeahead tests', function () {
 
       // Note that this bug can only be found when element is in the document
       $document.find('body').append(element);
-      // Extra teardown for this spec
-      this.after(function () { element.remove(); });
 
       changeInputValueTo(element, 'b');
       var match = $(findMatches(element)[1]).find('a')[0];
 
       $(match).click();
       $scope.$digest();
+      element.remove();
     });
   });
 

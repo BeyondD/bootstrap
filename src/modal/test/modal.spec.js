@@ -35,60 +35,95 @@ describe('$modal', function () {
   }));
 
   beforeEach(function () {
-    this.addMatchers({
+    jasmine.addMatchers({
+      toBeResolvedWith: function() {
+        return {
+          compare: function(actual, value) {
+            var resolved,
+              result = {};
 
-      toBeResolvedWith: function(value) {
-        var resolved;
-        this.message = function() {
-          return 'Expected "' + angular.mock.dump(this.actual) + '" to be resolved with "' + value + '".';
+            actual.then(function(result) {
+              resolved = result;
+            });
+            $rootScope.$digest();
+
+            result.pass = resolved === value;
+
+            result.message = function() {
+              return 'Expected "' + angular.mock.dump(actual) + '" to be resolved with "' + value + '".';
+            };
+
+            return result;
+          }
         };
-        this.actual.then(function(result){
-          resolved = result;
-        });
-        $rootScope.$digest();
-
-        return resolved === value;
       },
 
-      toBeRejectedWith: function(value) {
-        var rejected;
-        this.message = function() {
-          return 'Expected "' + angular.mock.dump(this.actual) + '" to be rejected with "' + value + '".';
-        };
-        this.actual.then(angular.noop, function(reason){
-          rejected = reason;
-        });
-        $rootScope.$digest();
+      toBeRejectedWith: function() {
+        return {
+          compare: function(actual, value) {
+            var rejected,
+              result = {};
 
-        return rejected === value;
+            actual.then(angular.noop, function(reason) {
+              rejected = reason;
+            });
+            $rootScope.$digest();
+
+            result.pass = rejected === value;
+
+            result.message = function() {
+              return 'Expected "' + angular.mock.dump(actual) + '" to be rejected with "' + value + '".';
+            };
+
+            return result;
+          }
+        };
       },
 
-      toHaveModalOpenWithContent: function(content, selector) {
+      toHaveModalOpenWithContent: function() {
+        return {
+          compare: function(actual, content, selector) {
+            var contentToCompare,
+              modalDomEls = actual.find('body > div.modal > div.modal-dialog > div.modal-content'),
+              result = {};
 
-        var contentToCompare, modalDomEls = this.actual.find('body > div.modal > div.modal-dialog > div.modal-content');
+            contentToCompare = selector ? modalDomEls.find(selector) : modalDomEls;
+            result.pass = modalDomEls.css('display') === 'block' && contentToCompare.html() == content;
 
-        this.message = function() {
-          return '"Expected "' + angular.mock.dump(modalDomEls) + '" to be open with "' + content + '".';
+            result.message = function() {
+              return '"Expected "' + angular.mock.dump(modalDomEls) + '" to be open with "' + content + '".';
+            };
+
+            return result;
+          }
         };
-
-        contentToCompare = selector ? modalDomEls.find(selector) : modalDomEls;
-        return modalDomEls.css('display') === 'block' &&  contentToCompare.html() == content;
       },
 
-      toHaveModalsOpen: function(noOfModals) {
-
-        var modalDomEls = this.actual.find('body > div.modal');
-        return modalDomEls.length === noOfModals;
+      toHaveModalsOpen: function() {
+        return {
+          compare: function(actual, noOfModals) {
+            return {
+              pass: (actual.find('body > div.modal').length === noOfModals)
+            };
+          }
+        };
       },
 
       toHaveBackdrop: function() {
+        return {
+          compare: function(actual) {
+            var backdropDomEls = actual.find('body > div.modal-backdrop'),
+              result = {};
 
-        var backdropDomEls = this.actual.find('body > div.modal-backdrop');
-        this.message = function() {
-          return 'Expected "' + angular.mock.dump(backdropDomEls) + '" to be a backdrop element".';
+            result.pass = backdropDomEls.length === 1;
+
+            result.message = function() {
+              return 'Expected "' + angular.mock.dump(backdropDomEls) + '" to be a backdrop element".';
+            };
+
+            return result;
+          }
         };
-
-        return backdropDomEls.length === 1;
       }
     });
   });

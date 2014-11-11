@@ -918,20 +918,20 @@ describe('datepicker directive', function () {
     });
 
     it('executes the dateDisabled expression for each visible day plus one for validation', function() {
-      expect($rootScope.dateDisabledHandler.calls.length).toEqual(42 + 1);
+      expect($rootScope.dateDisabledHandler.calls.count()).toEqual(42 + 1);
     });
 
     it('executes the dateDisabled expression for each visible month plus one for validation', function() {
-      $rootScope.dateDisabledHandler.reset();
+      $rootScope.dateDisabledHandler.calls.reset();
       clickTitleButton();
-      expect($rootScope.dateDisabledHandler.calls.length).toEqual(12 + 1);
+      expect($rootScope.dateDisabledHandler.calls.count()).toEqual(12 + 1);
     });
 
     it('executes the dateDisabled expression for each visible year plus one for validation', function() {
       clickTitleButton();
-      $rootScope.dateDisabledHandler.reset();
+      $rootScope.dateDisabledHandler.calls.reset();
       clickTitleButton();
-      expect($rootScope.dateDisabledHandler.calls.length).toEqual(20 + 1);
+      expect($rootScope.dateDisabledHandler.calls.count()).toEqual(20 + 1);
     });
   });
 
