@@ -98,7 +98,7 @@ module.exports = function(grunt) {
           cwd: './',
           dest: './',
           rename: function(dest, src) {
-            return dest + src.replace("-" + pkgJson.version, ''); //remove version number
+            return dest + src.replace('-' + pkgJson.version, ''); //remove version number
           }
         }]
       }
