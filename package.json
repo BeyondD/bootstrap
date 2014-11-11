@@ -1,8 +1,9 @@
 {
-  "author": "https://github.com/angular-ui/bootstrap/graphs/contributors",
+  "author": "https://github.com/BeyondD/bootstrap/graphs/contributors",
+  "private": true,
   "name": "angular-ui-bootstrap",
   "version": "0.12.0-ALZ",
-  "homepage": "http://angular-ui.github.io/bootstrap/",
+  "homepage": "https://github.com/BeyondD/bootstrap",
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
