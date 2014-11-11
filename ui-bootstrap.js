@@ -1619,6 +1619,7 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
     transclude: true,
     templateUrl: 'template/datepicker/popup.html',
     link:function (scope, element, attrs) {
+      scope.position = {top: 0, left: 0, width: 0, height: 0}; // Initialise position due to IE8 bug
       element.bind('click', function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -3852,6 +3853,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       link:function (scope, element, attrs) {
 
         scope.templateUrl = attrs.templateUrl;
+        //scope.position = {top: 0, left: 0, width: 0, height: 0}; // Initialise position due to IE8 bug
 
         scope.isOpen = function () {
           return scope.matches.length > 0;
