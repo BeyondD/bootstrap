@@ -1,5 +1,6 @@
 /* jshint node: true */
-var markdown = require('node-markdown').Markdown;
+var markdown = require('node-markdown').Markdown,
+  pkgJson = require('./package.json');
 
 module.exports = function(grunt) {
 
@@ -87,6 +88,18 @@ module.exports = function(grunt) {
           src: ['**/**/*', '!**/*.html'],
           cwd: 'misc/demo',
           dest: 'dist/'
+        }]
+      },
+      dist: {
+        files: [{
+          expand: true,
+          flatten: true,
+          src: ['dist/*.js'],
+          cwd: './',
+          dest: './',
+          rename: function(dest, src) {
+            return dest + src.replace("-" + pkgJson.version, ''); //remove version number
+          }
         }]
       }
     },
