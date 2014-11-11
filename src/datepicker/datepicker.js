@@ -630,6 +630,7 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
     transclude: true,
     templateUrl: 'template/datepicker/popup.html',
     link:function (scope, element, attrs) {
+      scope.position = {top: 0, left: 0, width: 0, height: 0}; // Initialise position due to IE8 bug
       element.bind('click', function(event) {
         event.preventDefault();
         event.stopPropagation();
