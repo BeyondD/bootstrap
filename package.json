@@ -24,6 +24,7 @@
     "karma-jasmine": "^0.2.3",
     "karma-opera-launcher": "^0.1.0",
     "karma-phantomjs-launcher": "^0.1.4",
+    "karma-safari-launcher": "^0.1.1",
     "node-markdown": "0.1.1",
     "semver": "~4.1.0",
     "shelljs": "~0.3.0"

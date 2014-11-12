@@ -149,12 +149,12 @@ module.exports = function(grunt) {
         singleRun: true,
         colors: false,
         reporters: ['dots', 'junit'],
-        browsers: ['Chrome', 'ChromeCanary', 'Firefox', 'Opera', '/Users/jenkins/bin/safari.sh']
+        browsers: ['Chrome', 'ChromeCanary', 'Firefox', 'Opera']
       },
       travis: {
         singleRun: true,
         reporters: ['dots'],
-        browsers: ['Chrome', 'Firefox', 'IE']
+        browsers: ['Firefox']
       },
       coverage: {
         preprocessors: {

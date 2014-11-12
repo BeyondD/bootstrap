@@ -25,13 +25,27 @@
       // - Chrome
       // - ChromeCanary
       // - IE
+      // - IE8
+      // - IE9
       // - Firefox
       // - Opera
       // - Safari
       // - PhantomJS
       browsers: [
-        'PhantomJS'
+        'PhantomJS'/*,
+        'IE8'*/
       ],
+
+      customLaunchers: {
+        IE9: {
+          base: 'IE',
+          'x-ua-compatible': 'IE=EmulateIE9'
+        },
+        IE8: {
+          base: 'IE',
+          'x-ua-compatible': 'IE=EmulateIE8'
+        }
+      },
 
       // test results reporter to use
       // possible values: dots || progress
