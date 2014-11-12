@@ -2,8 +2,21 @@
 
 ***
 
-[![Build Status](https://secure.travis-ci.org/angular-ui/bootstrap.svg)](http://travis-ci.org/angular-ui/bootstrap)
-[![devDependency Status](https://david-dm.org/angular-ui/bootstrap/dev-status.svg?branch=master)](https://david-dm.org/angular-ui/bootstrap#info=devDependencies)
+[![Build Status](https://secure.travis-ci.org/BeyondD/bootstrap.svg)](http://travis-ci.org/BeyondD/bootstrap)
+[![devDependency Status](https://david-dm.org/BeyondD/bootstrap/dev-status.svg?branch=master)](https://david-dm.org/BeyondD/bootstrap#info=devDependencies)
+
+## Fork
+
+This fork of angular-ui/bootstrap (https://github.com/angular-ui/bootstrap) is primarily to provide fixes for IE8 issues we come across while utilising in projects requiring IE8 support.
+To include via Bower, for example, in bower.json:
+
+``` javascript
+"dependencies": {
+  "angular-bootstrap": "angular-bootstrap": "https://github.com/BeyondD/bootstrap.git#1954f2acf041ae5f4ff6c9270a37990955e41bbc"
+}
+```
+
+... where the hash at the end references the latest commit you wish to include.
 
 ## Demo
 
