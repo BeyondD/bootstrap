@@ -32,11 +32,11 @@ describe('carousel', function() {
         {active:false,content:'three'}
       ];
       elm = $compile(
-        '<carousel interval="interval" no-transition="true" no-pause="nopause">' +
-          '<slide ng-repeat="slide in slides" active="slide.active">' +
+        '<div carousel interval="interval" no-transition="true" no-pause="nopause">' +
+          '<div slide ng-repeat="slide in slides" active="slide.active">' +
             '{{slide.content}}' +
-          '</slide>' +
-        '</carousel>'
+          '</div>' +
+        '</div>'
       )(scope);
       scope.interval = 5000;
       scope.nopause = undefined;

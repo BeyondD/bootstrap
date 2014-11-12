@@ -143,13 +143,13 @@ describe('$modal', function () {
 
   function close(modal, result) {
     modal.close(result);
-    $timeout.flush();
+    $timeout.flush(1000);
     $rootScope.$digest();
   }
 
   function dismiss(modal, reason) {
     modal.dismiss(reason);
-    $timeout.flush();
+    $timeout.flush(1000);
     $rootScope.$digest();
   }
 

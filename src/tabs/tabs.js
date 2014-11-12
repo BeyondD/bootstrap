@@ -188,6 +188,7 @@ angular.module('ui.bootstrap.tabs', [])
     transclude: true,
     scope: {
       active: '=?',
+      disabled: '=?ngDisabled', // IE8 cannot bind to attrs.disabled, so ngDisabled may/should be used
       heading: '@',
       onSelect: '&select', //This callback is called in contentHeadingTransclude
                           //once it inserts the tab's content into the dom
@@ -204,12 +205,17 @@ angular.module('ui.bootstrap.tabs', [])
           }
         });
 
-        scope.disabled = false;
-        if ( attrs.disabled ) {
+        if ( attrs.disabled) {
           scope.$parent.$watch($parse(attrs.disabled), function(value) {
-            scope.disabled = !! value;
+            if(typeof(value) !== 'undefined') { // IE8 cannot bind to attrs.disabled and will parse as undefined
+              scope.disabled = !!value;
+            }
           });
         }
+
+        /*scope.$watch('disabled', function(value) {
+          scope.disabled = !!value;
+        });*/
 
         scope.select = function() {
           if ( !scope.disabled ) {

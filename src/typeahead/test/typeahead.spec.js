@@ -204,7 +204,7 @@ describe('typeahead tests', function () {
       var element = prepareInputEl('<div><input ng-model="result" typeahead="item as formatterFn(item) for item in source | filter:$viewValue"></div>');
       changeInputValueTo(element, 'fo');
       var matchHighlight = findMatches(element).find('a').html();
-      expect(matchHighlight).toEqual('prefix<strong>fo</strong>o');
+      expect(matchHighlight.toLowerCase()).toEqual(String('prefix<strong>fo</strong>o').toLowerCase());
     });
 
     it('should by default bind view value to model even if not part of matches', function () {

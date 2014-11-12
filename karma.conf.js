@@ -8,7 +8,8 @@
 
       // list of files / patterns to load in the browser
       files: [
-        'misc/test-lib/jquery-1.8.2.min.js',
+        'misc/test-lib/es5-shim.min.js',
+        'misc/test-lib/jquery-1.11.1.min.js',
         'misc/test-lib/angular.js',
         'misc/test-lib/angular-mocks.js',
         'misc/test-lib/helpers.js',
@@ -32,8 +33,8 @@
       // - Safari
       // - PhantomJS
       browsers: [
-        'PhantomJS'/*,
-        'IE8'*/
+        //'PhantomJS'
+        'IE8'
       ],
 
       customLaunchers: {

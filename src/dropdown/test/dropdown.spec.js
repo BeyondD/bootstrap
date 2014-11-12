@@ -53,10 +53,10 @@ describe('dropdownToggle', function() {
       element.remove();
     });
 
-    it('should close on document click', function() {
+    it('should close on document body click', function() {
       clickDropdownToggle();
       expect(element.hasClass('open')).toBe(true);
-      $document.click();
+      $document.find('body').click();
       expect(element.hasClass('open')).toBe(false);
     });
 

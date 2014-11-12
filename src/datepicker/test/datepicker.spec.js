@@ -106,7 +106,7 @@ describe('datepicker directive', function () {
 
   describe('', function () {
     beforeEach(function() {
-      element = $compile('<datepicker ng-model="date"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date"></div>')($rootScope);
       $rootScope.$digest();
     });
 
@@ -697,7 +697,7 @@ describe('datepicker directive', function () {
   describe('attribute `starting-day`', function () {
     beforeEach(function() {
       $rootScope.startingDay = 1;
-      element = $compile('<datepicker ng-model="date" starting-day="startingDay"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" starting-day="startingDay"></div>')($rootScope);
       $rootScope.$digest();
     });
 
@@ -725,7 +725,7 @@ describe('datepicker directive', function () {
     var weekHeader, weekElement;
     beforeEach(function() {
       $rootScope.showWeeks = false;
-      element = $compile('<datepicker ng-model="date" show-weeks="showWeeks"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" show-weeks="showWeeks"></div>')($rootScope);
       $rootScope.$digest();
 
       weekHeader = getLabelsRow().find('th').eq(0);
@@ -742,7 +742,7 @@ describe('datepicker directive', function () {
   describe('`min-date` attribute', function () {
     beforeEach(function() {
       $rootScope.mindate = new Date('September 12, 2010');
-      element = $compile('<datepicker ng-model="date" min-date="mindate"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" min-date="mindate"></div>')($rootScope);
       $rootScope.$digest();
     });
 
@@ -830,7 +830,7 @@ describe('datepicker directive', function () {
   describe('`max-date` attribute', function () {
     beforeEach(function() {
       $rootScope.maxdate = new Date('September 25, 2010');
-      element = $compile('<datepicker ng-model="date" max-date="maxdate"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" max-date="maxdate"></div>')($rootScope);
       $rootScope.$digest();
     });
 
@@ -913,7 +913,7 @@ describe('datepicker directive', function () {
   describe('date-disabled expression', function () {
     beforeEach(function() {
       $rootScope.dateDisabledHandler = jasmine.createSpy('dateDisabledHandler');
-      element = $compile('<datepicker ng-model="date" date-disabled="dateDisabledHandler(date, mode)"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" date-disabled="dateDisabledHandler(date, mode)"></div>')($rootScope);
       $rootScope.$digest();
     });
 
@@ -938,14 +938,14 @@ describe('datepicker directive', function () {
   describe('formatting', function () {
     beforeEach(function() {
       $rootScope.dayTitle = 'MMMM, yy';
-      element = $compile('<datepicker ng-model="date"' +
+      element = $compile('<div datepicker ng-model="date"' +
         'format-day="d"' +
         'format-day-header="EEEE"' +
         'format-day-title="{{dayTitle}}"' +
         'format-month="MMM"' +
         'format-month-title="yy"' +
         'format-year="yy"' +
-        'year-range="10"></datepicker>')($rootScope);
+        'year-range="10"></div>')($rootScope);
       $rootScope.$digest();
     });
 
@@ -1006,7 +1006,7 @@ describe('datepicker directive', function () {
       datepickerConfig.yearRange = 10;
       datepickerConfig.startingDay = 6;
 
-      element = $compile('<datepicker ng-model="date"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date"></div>')($rootScope);
       $rootScope.$digest();
     }));
     afterEach(inject(function(datepickerConfig) {
@@ -1219,6 +1219,7 @@ describe('datepicker directive', function () {
           var body = $document.find('body');
           body.append(inputEl);
           body.append(dropdownEl);
+          body.focus();
         });
 
         afterEach(function() {
@@ -1551,7 +1552,7 @@ describe('datepicker directive', function () {
         var $body = $document.find('body'),
             bodyLength = $body.children().length,
             elm = angular.element(
-              '<div><input datepicker-popup ng-model="date" datepicker-append-to-body="true"></input></div>'
+              '<div><input datepicker-popup ng-model="date" datepicker-append-to-body="true" /></div>'
             );
         $compile(elm)($rootScope);
         $rootScope.$digest();
@@ -1564,7 +1565,7 @@ describe('datepicker directive', function () {
             bodyLength = $body.children().length,
             isolatedScope = $rootScope.$new(),
             elm = angular.element(
-              '<input datepicker-popup ng-model="date" datepicker-append-to-body="true"></input>'
+              '<input datepicker-popup ng-model="date" datepicker-append-to-body="true" />'
             );
         $compile(elm)(isolatedScope);
         isolatedScope.$digest();
@@ -1580,7 +1581,7 @@ describe('datepicker directive', function () {
         angular.extend(originalConfig, datepickerConfig);
         datepickerConfig.showWeeks = false;
 
-        var wrapElement = $compile('<div><input ng-model="date" datepicker-popup><div>')($rootScope);
+        var wrapElement = $compile('<div><input ng-model="date" datepicker-popup /><div>')($rootScope);
         $rootScope.$digest();
         assignElements(wrapElement);
       }));
@@ -1602,7 +1603,7 @@ describe('datepicker directive', function () {
       beforeEach(inject(function() {
         $rootScope.date = new Date('August 11, 2013');
         $rootScope.mode = 'month';
-        var wrapElement = $compile('<div><input ng-model="date" datepicker-popup datepicker-mode="mode"></div>')($rootScope);
+        var wrapElement = $compile('<div><input ng-model="date" datepicker-popup datepicker-mode="mode" /></div>')($rootScope);
         $rootScope.$digest();
         assignElements(wrapElement);
       }));
@@ -1621,7 +1622,7 @@ describe('datepicker directive', function () {
   describe('with empty initial state', function () {
     beforeEach(inject(function() {
       $rootScope.date = null;
-      element = $compile('<datepicker ng-model="date"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date"></div>')($rootScope);
       $rootScope.$digest();
     }));
 
@@ -1648,7 +1649,7 @@ describe('datepicker directive', function () {
     beforeEach(inject(function() {
       $rootScope.date = null;
       $rootScope.initDate = new Date('November 9, 1980');
-      element = $compile('<datepicker ng-model="date" init-date="initDate"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" init-date="initDate"></div>')($rootScope);
       $rootScope.$digest();
     }));
 
@@ -1665,7 +1666,7 @@ describe('datepicker directive', function () {
     beforeEach(inject(function() {
       $rootScope.date = new Date('August 11, 2013');
       $rootScope.mode = 'month';
-      element = $compile('<datepicker ng-model="date" datepicker-mode="mode"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" datepicker-mode="mode"></div>')($rootScope);
       $rootScope.$digest();
     }));
 
@@ -1683,7 +1684,7 @@ describe('datepicker directive', function () {
     beforeEach(inject(function() {
       $rootScope.date = new Date('August 11, 2013');
       $rootScope.mode = 'month';
-      element = $compile('<datepicker ng-model="date" min-mode="month" datepicker-mode="mode"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" min-mode="month" datepicker-mode="mode"></div>')($rootScope);
       $rootScope.$digest();
     }));
 
@@ -1699,7 +1700,7 @@ describe('datepicker directive', function () {
   describe('`max-mode`', function () {
     beforeEach(inject(function() {
       $rootScope.date = new Date('August 11, 2013');
-      element = $compile('<datepicker ng-model="date" max-mode="month"></datepicker>')($rootScope);
+      element = $compile('<div datepicker ng-model="date" max-mode="month"></div>')($rootScope);
       $rootScope.$digest();
     }));
 

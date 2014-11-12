@@ -37,15 +37,15 @@ describe('tabs', function() {
       scope.deselectFirst = jasmine.createSpy();
       scope.deselectSecond = jasmine.createSpy();
       elm = $compile([
-        '<tabset class="hello" data-pizza="pepperoni">',
-        '  <tab heading="First Tab {{first}}" active="actives.one" select="selectFirst()" deselect="deselectFirst()">',
+        '<div tabset class="hello" data-pizza="pepperoni">',
+        '  <div tab heading="First Tab {{first}}" active="actives.one" select="selectFirst()" deselect="deselectFirst()">',
         '    first content is {{first}}',
-        '  </tab>',
-        '  <tab active="actives.two" select="selectSecond()" deselect="deselectSecond()">',
-        '    <tab-heading><b>Second</b> Tab {{second}}</tab-heading>',
+        '  </div>',
+        '  <div tab active="actives.two" select="selectSecond()" deselect="deselectSecond()">',
+        '    <div tab-heading><b>Second</b> Tab {{second}}</div>',
         '    second content is {{second}}',
-        '  </tab>',
-        '</tabset>'
+        '  </div>',
+        '</div>'
       ].join('\n'))(scope);
       scope.$apply();
       return elm;
@@ -61,8 +61,8 @@ describe('tabs', function() {
       expect(t.length).toBe(2);
       expect(t.find('a').eq(0).text()).toBe('First Tab 1');
       //It should put the tab-heading element into the 'a' title
-      expect(t.find('a').eq(1).children().is('tab-heading')).toBe(true);
-      expect(t.find('a').eq(1).children().html()).toBe('<b>Second</b> Tab 2');
+      expect(t.find('a').eq(1).children().is('div[tab-heading]')).toBe(true);
+      expect(t.find('a').eq(1).children().html().toLowerCase()).toBe(String('<b>Second</b> Tab 2').toLowerCase());
     });
 
     it('should bind tabs content and set first tab active', function() {
@@ -113,16 +113,16 @@ describe('tabs', function() {
         makeTab(), makeTab(), makeTab(true), makeTab()
       ];
       elm = $compile([
-        '<tabset>',
-        '  <tab active="tabs[0].active" select="tabs[0].select()">',
-        '  </tab>',
-        '  <tab active="tabs[1].active" select="tabs[1].select()">',
-        '  </tab>',
-        '  <tab active="tabs[2].active" select="tabs[2].select()">',
-        '  </tab>',
-        '  <tab active="tabs[3].active" select="tabs[3].select()">',
-        '  </tab>',
-        '</tabset>'
+        '<div tabset>',
+        '  <div tab active="tabs[0].active" select="tabs[0].select()">',
+        '  </div>',
+        '  <div tab active="tabs[1].active" select="tabs[1].select()">',
+        '  </div>',
+        '  <div tab active="tabs[2].active" select="tabs[2].select()">',
+        '  </div>',
+        '  <div tab active="tabs[3].active" select="tabs[3].select()">',
+        '  </div>',
+        '</div>'
       ].join('\n'))(scope);
       scope.$apply();
     }));
@@ -162,10 +162,10 @@ describe('tabs', function() {
 
       elm = $compile([
         '<div>',
-        '  <tabset class="hello" data-pizza="pepperoni">',
-        '    <tab heading="First Tab" active="actives.one" select="execute(\'select1\')" deselect="execute(\'deselect1\')"></tab>',
-        '    <tab select="execute(\'select2\')" deselect="execute(\'deselect2\')"></tab>',
-        '  </tabset>',
+        '  <div tabset class="hello" data-pizza="pepperoni">',
+        '    <div tab heading="First Tab" active="actives.one" select="execute(\'select1\')" deselect="execute(\'deselect1\')"></div>',
+        '    <div tab select="execute(\'select2\')" deselect="execute(\'deselect2\')"></div>',
+        '  </div>',
         '</div>'
       ].join('\n'))(scope);
       scope.$apply();
@@ -206,12 +206,12 @@ describe('tabs', function() {
         makeTab(), makeTab(), makeTab(true), makeTab()
       ];
       elm = $compile([
-        '<tabset>',
-        '  <tab ng-repeat="t in tabs" active="t.active" select="t.select()">',
-        '    <tab-heading><b>heading</b> {{index}}</tab-heading>',
+        '<div tabset>',
+        '  <div tab ng-repeat="t in tabs" active="t.active" select="t.select()">',
+        '    <div tab-heading><b>heading</b> {{index}}</div>',
         '    content {{$index}}',
-        '  </tab>',
-        '</tabset>'
+        '  </div>',
+        '</div>'
       ].join('\n'))(scope);
       scope.$apply();
     }));
@@ -273,15 +273,15 @@ describe('tabs', function() {
       scope.myHtml = $sce.trustAsHtml('<b>hello</b>, there!');
       scope.value = true;
       elm = $compile([
-        '<tabset>',
-        '  <tab>',
-        '    <tab-heading ng-bind-html="myHtml" ng-show="value">',
-        '    </tab-heading>',
-        '  </tab>',
-        '  <tab><data-tab-heading>1</data-tab-heading></tab>',
-        '  <tab><div data-tab-heading>2</div></tab>',
-        '  <tab><div tab-heading>3</div></tab>',
-        '</tabset>'
+        '<div tabset>',
+        '  <div tab>',
+        '    <div tab-heading ng-bind-html="myHtml" ng-show="value">',
+        '    </div>',
+        '  </div>',
+        '  <div tab><div data-tab-heading>1</div></div>',
+        '  <div tab><div data-tab-heading>2</div></div>',
+        '  <div tab><div tab-heading>3</div></div>',
+        '</div>'
       ].join('\n'))(scope);
       scope.$apply();
     }));
@@ -291,7 +291,7 @@ describe('tabs', function() {
     }
 
     it('should create a heading bound to myHtml', function() {
-      expect(heading().eq(0).html()).toBe('<b>hello</b>, there!');
+      expect(heading().eq(0).html().toLowerCase()).toBe(String('<b>hello</b>, there!').toLowerCase());
     });
 
     it('should hide and show the heading depending on value', function() {
@@ -321,26 +321,26 @@ describe('tabs', function() {
         { title:'Title 3', available:true }
       ];
       elm = $compile([
-        '<tabset>',
+        '<div tabset>',
         '  <!-- a comment -->',
         '  <div>div that makes troubles</div>',
-        '  <tab heading="first">First Static</tab>',
+        '  <div tab heading="first">First Static</div>',
         '  <div>another div that may do evil</div>',
-        '  <tab ng-repeat="tab in tabs | filter:tabIsAvailable" active="tab.active" heading="{{tab.title}}">some content</tab>',
+        '  <div tab ng-repeat="tab in tabs | filter:tabIsAvailable" active="tab.active" heading="{{tab.title}}">some content</div>',
         '  <!-- another comment -->',
-        '  <tab heading="mid">Mid Static</tab>',
+        '  <div tab heading="mid">Mid Static</div>',
         '  a text node',
         '  <!-- another comment -->',
         '  <span>yet another span that may do evil</span>',
-        '  <tab ng-repeat="tab in tabs | filter:tabIsAvailable" active="tab.active" heading="Second {{tab.title}}">some content</tab>',
+        '  <div tab ng-repeat="tab in tabs | filter:tabIsAvailable" active="tab.active" heading="Second {{tab.title}}">some content</div>',
         '  a text node',
         '  <span>yet another span that may do evil</span>',
         '  <!-- another comment -->',
-        '  <tab heading="last">Last Static</tab>',
+        '  <div tab heading="last">Last Static</div>',
         '  a text node',
         '  <span>yet another span that may do evil</span>',
         '  <!-- another comment -->',
-        '</tabset>'
+        '</div>'
       ].join('\n'))(scope);
 
       scope.tabIsAvailable = function(tab) {
@@ -475,7 +475,7 @@ describe('tabs', function() {
 
     it('should remove title tabs when elements are destroyed and change selection', inject(function($controller, $compile, $rootScope) {
       scope = $rootScope.$new();
-      elm = $compile('<tabset><tab heading="1">Hello</tab><tab ng-repeat="i in list" heading="tab {{i}}">content {{i}}</tab></tabset>')(scope);
+      elm = $compile('<div tabset><div tab heading="1">Hello</div><div tab ng-repeat="i in list" heading="tab {{i}}">content {{i}}</div></div>')(scope);
       scope.$apply();
 
       expectTitles(['1']);
@@ -535,12 +535,12 @@ describe('tabs', function() {
         getTab(false)
       ];
       elm = $compile([
-        '<tabset>',
-        '  <tab ng-repeat="t in tabs" active="t.active" select="t.select()" deselect="t.deselect()">',
-        '    <tab-heading><b>heading</b> {{index}}</tab-heading>',
+        '<div tabset>',
+        '  <div tab ng-repeat="t in tabs" active="t.active" select="t.select()" deselect="t.deselect()">',
+        '    <div tab-heading><b>heading</b> {{index}}</div>',
         '    content {{$index}}',
-        '  </tab>',
-        '</tabset>'
+        '  </div>',
+        '</div>'
       ].join('\n'))(scope);
       scope.$apply();
 
@@ -562,19 +562,19 @@ describe('tabs', function() {
         return {
           active: false,
           select: jasmine.createSpy(),
-          disabled: disabled
+          disabled: !!disabled
         };
       }
       scope.tabs = [
         makeTab(false), makeTab(true), makeTab(false), makeTab(true)
       ];
       elm = $compile([
-        '<tabset>',
-        '  <tab ng-repeat="t in tabs" active="t.active" select="t.select()" disabled="t.disabled">',
-        '    <tab-heading><b>heading</b> {{index}}</tab-heading>',
+        '<div tabset>',
+        '  <div tab ng-repeat="t in tabs" active="t.active" select="t.select()" ng-disabled="t.disabled" disabled="t.disabled">', // note, binding to 'disabled' fails in IE7/8, should use ng-disabled instead
+        '    <div tab-heading><b>heading</b> {{index}}</div>',
         '    content {{$index}}',
-        '  </tab>',
-        '</tabset>'
+        '  </div>',
+        '</div>'
       ].join('\n'))(scope);
       scope.$apply();
     }));
@@ -618,7 +618,7 @@ describe('tabs', function() {
     beforeEach(inject(function($compile, $rootScope) {
       scope = $rootScope.$new();
       scope.vertical = true;
-      elm = $compile('<tabset vertical="vertical"></tabset>')(scope);
+      elm = $compile('<div tabset vertical="vertical"></div>')(scope);
       scope.$apply();
     }));
 
@@ -628,16 +628,16 @@ describe('tabs', function() {
   });
 
   describe('justified', function() {
-      beforeEach(inject(function($compile, $rootScope) {
-          scope = $rootScope.$new();
-          scope.justified = true;
-          elm = $compile('<tabset justified="justified"></tabset>')(scope);
-          scope.$apply();
-      }));
+    beforeEach(inject(function($compile, $rootScope) {
+        scope = $rootScope.$new();
+        scope.justified = true;
+        elm = $compile('<div tabset justified="justified"></div>')(scope);
+        scope.$apply();
+    }));
 
-      it('to justify tabs', function() {
-          expect(elm.find('ul.nav-tabs')).toHaveClass('nav-justified');
-      });
+    it('to justify tabs', function() {
+        expect(elm.find('ul.nav-tabs')).toHaveClass('nav-justified');
+    });
   });
 
   describe('type', function() {
@@ -645,7 +645,7 @@ describe('tabs', function() {
       scope = $rootScope.$new();
       scope.navType = 'pills';
 
-      elm = $compile('<tabset type="{{navType}}"></tabset>')(scope);
+      elm = $compile('<div tabset type="{{navType}}"></div>')(scope);
       scope.$apply();
     }));
 
@@ -660,7 +660,7 @@ describe('tabs', function() {
 
     var elm;
     beforeEach(inject(function($compile, $rootScope) {
-      elm = $compile('<tabset><tab><div></div></tab></tabset></div>')($rootScope.$new());
+      elm = $compile('<div tabset><div tab><div></div></div></div>')($rootScope.$new());
       $rootScope.$apply();
     }));
 
@@ -675,7 +675,7 @@ describe('tabs', function() {
     var elm;
     it('should render correct amount of options', inject(function($compile, $rootScope) {
       var scope = $rootScope.$new();
-      elm = $compile('<tabset><tab><select ng-model="foo" ng-options="i for i in [1,2,3]"></tab>')(scope);
+      elm = $compile('<div tabset><div tab><select ng-model="foo" ng-options="i for i in [1,2,3]"></div></div>')(scope);
       scope.$apply();
 
       var select = elm.find('select');
@@ -694,12 +694,12 @@ describe('tabs', function() {
         {title:'b', array:[2,3,4]},
         {title:'c', array:[3,4,5]}
       ];
-      elm = $compile('<div><tabset>' +
-        '<tab ng-repeat="tab in tabs" heading="{{tab.title}}">' +
-          '<tab-heading>{{$index}}</tab-heading>' +
+      elm = $compile('<div><div tabset>' +
+        '<div tab ng-repeat="tab in tabs" heading="{{tab.title}}">' +
+          '<div tab-heading>{{$index}}</div>' +
           '<span ng-repeat="a in tab.array">{{a}},</span>' +
-        '</tab>' +
-      '</tabset></div>')(scope);
+        '</div>' +
+      '</div></div>')(scope);
       scope.$apply();
 
       var contents = elm.find('.tab-pane');
@@ -716,20 +716,20 @@ describe('tabs', function() {
       var scope = $rootScope.$new();
       elm = $compile([
         '<div>',
-        '  <tabset class="tabbable">',
-        '    <tab heading="Tab 1">',
-        '      <tabset class="tabbable">',
-        '        <tab heading="Tab 1A">',
-        '        </tab>',
-        '      </tabset>',
-        '    </tab>',
-        '    <tab heading="Tab 2">',
-        '      <tabset class="tabbable">',
-        '        <tab heading="Tab 2A">',
-        '        </tab>',
-        '      </tabset>',
-        '    </tab>',
-        '  </tabset>',
+        '  <div tabset class="tabbable">',
+        '    <div tab heading="Tab 1">',
+        '      <div tabset class="tabbable">',
+        '        <div tab heading="Tab 1A">',
+        '        </div>',
+        '      </div>',
+        '    </div>',
+        '    <div tab heading="Tab 2">',
+        '      <div tabset class="tabbable">',
+        '        <div tab heading="Tab 2A">',
+        '        </div>',
+        '      </div>',
+        '    </div>',
+        '  </div>',
         '</div>'
       ].join('\n'))(scope);
       scope.$apply();
@@ -746,27 +746,27 @@ describe('tabs', function() {
       scope.tab2aaText = '456';
       elm = $compile([
         '<div>',
-        '  <tabset class="tabbable">',
-        '    <tab heading="Tab 1">',
-        '      <tabset class="tabbable">',
-        '        <tab heading="{{ tab1aHead }}">',
+        '  <div tabset class="tabbable">',
+        '    <div tab heading="Tab 1">',
+        '      <div tabset class="tabbable">',
+        '        <div tab heading="{{ tab1aHead }}">',
         '          {{ tab1aText }}',
-        '        </tab>',
-        '      </tabset>',
+        '        </div>',
+        '      </div>',
         '      <span class="tab-1">{{ tab1Text }}</span>',
-        '    </tab>',
-        '    <tab heading="Tab 2">',
-        '      <tabset class="tabbable">',
-        '        <tab heading="Tab 2A">',
-        '          <tabset class="tabbable">',
-        '            <tab heading="Tab 2AA">',
+        '    </div>',
+        '    <div tab heading="Tab 2">',
+        '      <div tabset class="tabbable">',
+        '        <div tab heading="Tab 2A">',
+        '          <div tabset class="tabbable">',
+        '            <div tab heading="Tab 2AA">',
         '              <span class="tab-2aa">{{ tab2aaText }}</span>',
-        '            </tab>',
-        '          </tabset>',
-        '        </tab>',
-        '      </tabset>',
-        '    </tab>',
-        '  </tabset>',
+        '            </div>',
+        '          </div>',
+        '        </div>',
+        '      </div>',
+        '    </div>',
+        '  </div>',
         '</div>'
       ].join('\n'))(scope);
       scope.$apply();
@@ -798,16 +798,16 @@ describe('tabs', function() {
       ];
       elm = $compile([
         '<div>',
-        '  <tabset>',
-        '    <tab ng-repeat="tab in tabs">',
-        '      <tabset>',
-        '        <tab ng-repeat="innerTab in tab.tabs">',
+        '  <div tabset>',
+        '    <div tab ng-repeat="tab in tabs">',
+        '      <div tabset>',
+        '        <div tab ng-repeat="innerTab in tab.tabs">',
         '          <span class="inner-tab-content">{{ innerTab.content }}</span>',
-        '        </tab>',
-        '      </tabset>',
+        '        </div>',
+        '      </div>',
         '      <span class="outer-tab-content">{{ tab.content }}</span>',
-        '    </tab>',
-        '  </tabset>',
+        '    </div>',
+        '  </div>',
         '</div>'
       ].join('\n'))(scope);
       scope.$apply();

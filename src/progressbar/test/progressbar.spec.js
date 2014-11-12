@@ -6,7 +6,7 @@ describe('progressbar directive', function () {
     $compile = _$compile_;
     $rootScope = _$rootScope_;
     $rootScope.value = 22;
-    element = $compile('<progressbar animate="false" value="value">{{value}} %</progressbar>')($rootScope);
+    element = $compile('<div progressbar animate="false" value="value">{{value}} %</div>')($rootScope);
     $rootScope.$digest();
   }));
 
@@ -26,7 +26,7 @@ describe('progressbar directive', function () {
   });
 
   it('has a "bar" element with expected width', function() {
-    expect(getBar(0).css('width')).toBe('22%');
+    expect(getBar(0)[0].style.width).toBe('22%'); // IE8 requires [0].style.width instead of .css('width') due to it being in-line percentage
   });
 
   it('has the appropriate aria markup', function() {
@@ -43,7 +43,7 @@ describe('progressbar directive', function () {
   });
 
   it('it should be possible to add additional classes', function () {
-    element = $compile('<progress class="progress-striped active" max="200"><bar class="pizza"></bar></progress>')($rootScope);
+    element = $compile('<div progress class="progress-striped active" max="200"><div bar class="pizza"></div></div>')($rootScope);
     $rootScope.$digest();
 
     expect(element).toHaveClass('progress-striped');
@@ -57,7 +57,7 @@ describe('progressbar directive', function () {
       $rootScope.$digest();
 
       var bar = getBar(0);
-      expect(bar.css('width')).toBe('60%');
+      expect(bar[0].style.width).toBe('60%');
 
       expect(bar.attr('aria-valuemin')).toBe('0');
       expect(bar.attr('aria-valuemax')).toBe('100');
@@ -68,11 +68,11 @@ describe('progressbar directive', function () {
   it('allows fractional "bar" width values, rounded to two places', function () {
     $rootScope.value = 5.625;
     $rootScope.$digest();
-    expect(getBar(0).css('width')).toBe('5.63%');
+    expect(getBar(0)[0].style.width).toBe('5.63%');
 
     $rootScope.value = 1.3;
     $rootScope.$digest();
-    expect(getBar(0).css('width')).toBe('1.3%');
+    expect(getBar(0)[0].style.width).toBe('1.3%');
   });
 
   it('does not include decimals in aria values', function () {
@@ -80,14 +80,14 @@ describe('progressbar directive', function () {
     $rootScope.$digest();
 
     var bar = getBar(0);
-    expect(bar.css('width')).toBe('50.34%');
+    expect(bar[0].style.width).toBe('50.34%');
     expect(bar.attr('aria-valuetext')).toBe('50%');
   });
 
   describe('"max" attribute', function () {
     beforeEach(inject(function() {
       $rootScope.max = 200;
-      element = $compile('<progressbar max="max" animate="false" value="value">{{value}}/{{max}}</progressbar>')($rootScope);
+      element = $compile('<div progressbar max="max" animate="false" value="value">{{value}}/{{max}}</div>')($rootScope);
       $rootScope.$digest();
     }));
 
@@ -96,21 +96,21 @@ describe('progressbar directive', function () {
     });
 
     it('adjusts the "bar" width', function() {
-      expect(element.children().eq(0).css('width')).toBe('11%');
+      expect(getBar(0)[0].style.width).toBe('11%');
     });
 
     it('adjusts the "bar" width when value changes', function() {
       $rootScope.value = 60;
       $rootScope.$digest();
-      expect(getBar(0).css('width')).toBe('30%');
+      expect(getBar(0)[0].style.width).toBe('30%');
 
       $rootScope.value += 12;
       $rootScope.$digest();
-      expect(getBar(0).css('width')).toBe('36%');
+      expect(getBar(0)[0].style.width).toBe('36%');
 
       $rootScope.value = 0;
       $rootScope.$digest();
-      expect(getBar(0).css('width')).toBe('0%');
+      expect(getBar(0)[0].style.width).toBe('0%');
     });
 
     it('transcludes "bar" text', function() {
@@ -121,7 +121,7 @@ describe('progressbar directive', function () {
   describe('"type" attribute', function () {
     beforeEach(inject(function() {
       $rootScope.type = 'success';
-      element = $compile('<progressbar value="value" type="{{type}}"></progressbar>')($rootScope);
+      element = $compile('<div progressbar value="value" type="{{type}}"></div>')($rootScope);
       $rootScope.$digest();
     }));
 
@@ -149,7 +149,7 @@ describe('progressbar directive', function () {
         { value: 50, type: 'warning' },
         { value: 20 }
       ];
-      element = $compile('<progress animate="false"><bar ng-repeat="o in objects" value="o.value" type="{{o.type}}">{{o.value}}</bar></progress>')($rootScope);
+      element = $compile('<div progress animate="false"><div bar ng-repeat="o in objects" value="o.value" type="{{o.type}}">{{o.value}}</div></div>')($rootScope);
       $rootScope.$digest();
     }));
 
@@ -161,9 +161,9 @@ describe('progressbar directive', function () {
     });
 
     it('renders each bar with the appropriate width', function() {
-      expect(getBar(0).css('width')).toBe('10%');
-      expect(getBar(1).css('width')).toBe('50%');
-      expect(getBar(2).css('width')).toBe('20%');
+      expect(getBar(0)[0].style.width).toBe('10%');
+      expect(getBar(1)[0].style.width).toBe('50%');
+      expect(getBar(2)[0].style.width).toBe('20%');
     });
 
     it('uses correct classes', function() {

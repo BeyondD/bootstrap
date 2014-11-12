@@ -12,9 +12,9 @@ describe('alert', function () {
 
     element = angular.element(
         '<div>' +
-          '<alert ng-repeat="alert in alerts" type="{{alert.type}}"' +
+          '<div alert ng-repeat="alert in alerts" type="{{alert.type}}"' +
             'close="removeAlert($index)">{{alert.msg}}' +
-          '</alert>' +
+          '</div>' +
         '</div>');
 
     scope.alerts = [
@@ -92,14 +92,14 @@ describe('alert', function () {
   });
 
   it('should not show close button and have the dismissable class if no close callback specified', function () {
-    element = $compile('<alert>No close</alert>')(scope);
+    element = $compile('<div alert>No close</div>')(scope);
     scope.$digest();
     expect(findCloseButton(0)).toBeHidden();
     expect(element).not.toHaveClass('alert-dismissable');
   });
 
   it('should be possible to add additional classes for alert', function () {
-    var element = $compile('<alert class="alert-block" type="info">Default alert!</alert>')(scope);
+    var element = $compile('<div alert class="alert-block" type="info">Default alert!</div>')(scope);
     scope.$digest();
     expect(element).toHaveClass('alert-block');
     expect(element).toHaveClass('alert-info');

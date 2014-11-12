@@ -246,21 +246,25 @@ describe('tooltip', function() {
       scope = $rootScope;
     }));
 
-    it( 'should use it to show but set the hide trigger based on the map for mapped triggers', inject( function( $compile ) {
+    it( 'should use it to show but set the hide trigger based on the map for mapped triggers', inject( function( $compile, $document ) {
       elmBody = angular.element(
         '<div><input tooltip="Hello!" tooltip-trigger="focus" /></div>'
       );
       $compile(elmBody)(scope);
+      elmBody.appendTo($document.find('body')); // IE8 req
       scope.$apply();
       elm = elmBody.find('input');
       elmScope = elm.scope();
       tooltipScope = elmScope.$$childTail;
 
       expect( tooltipScope.isOpen ).toBeFalsy();
+      elm.focus(); // IE8 req
       elm.trigger('focus');
       expect( tooltipScope.isOpen ).toBeTruthy();
+      elm.blur(); // IE8 req
       elm.trigger('blur');
       expect( tooltipScope.isOpen ).toBeFalsy();
+      elmBody.remove();
     }));
 
     it( 'should use it as both the show and hide triggers for unmapped triggers', inject( function( $compile ) {
@@ -392,7 +396,7 @@ describe('tooltipWithDifferentSymbols', function() {
         $interpolateProvider.startSymbol(']]');
       }));
 
-    it( 'should show the correct tooltip text', inject( function ( $compile, $rootScope ) {
+    it( 'should show the correct tooltip text', inject( function ( $compile, $rootScope, $document ) {
 
       elmBody = angular.element(
         '<div><input type="text" tooltip="My tooltip" tooltip-trigger="focus" tooltip-placement="right" /></div>'
@@ -400,10 +404,13 @@ describe('tooltipWithDifferentSymbols', function() {
       $compile(elmBody)($rootScope);
       $rootScope.$apply();
       var elmInput = elmBody.find('input');
+      elmBody.appendTo($document.find('body')); // IE8 requires this in order for focus event behaviour to occur
+      elmInput.focus();
       elmInput.trigger('focus');
 
       expect( elmInput.next().find('div').next().html() ).toBe('My tooltip');
 
+      elmBody.remove();
     }));
 
 });
@@ -434,7 +441,7 @@ describe( 'tooltipHtmlUnsafe', function() {
 
   it( 'should render html properly', inject( function () {
     elm.trigger( 'mouseenter' );
-    expect( elmBody.find('.tooltip-inner').html() ).toBe( scope.html );
+    expect( elmBody.find('.tooltip-inner').html().toLowerCase().replace(/"/g, '') ).toBe( scope.html.toLowerCase().replace(/"/g, '') ); // IE8 doesn't show quotes on attribs, and capitalises; so normalising
   }));
 
   it( 'should show on mouseenter and hide on mouseleave', inject( function () {
@@ -558,23 +565,27 @@ describe( '$tooltipProvider', function() {
       // load the template
       beforeEach(module('template/tooltip/tooltip-popup.html'));
 
-      it( 'should use the show trigger and the mapped value for the hide trigger', inject( function ( $rootScope, $compile ) {
+      it( 'should use the show trigger and the mapped value for the hide trigger', inject( function ( $rootScope, $compile, $document ) {
         elmBody = angular.element(
           '<div><input tooltip="tooltip text" /></div>'
         );
 
         scope = $rootScope;
         $compile(elmBody)(scope);
+        elmBody.appendTo($document.find('body')); // IE8 req
         scope.$digest();
         elm = elmBody.find('input');
         elmScope = elm.scope();
         tooltipScope = elmScope.$$childTail;
 
         expect( tooltipScope.isOpen ).toBeFalsy();
+        elm.focus(); // IE8 req
         elm.trigger('focus');
         expect( tooltipScope.isOpen ).toBeTruthy();
+        elm.blur(); // IE8 req
         elm.trigger('blur');
         expect( tooltipScope.isOpen ).toBeFalsy();
+        elmBody.remove();
       }));
 
       it( 'should override the show and hide triggers if there is an attribute', inject( function ( $rootScope, $compile ) {
