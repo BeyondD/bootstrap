@@ -24,12 +24,13 @@
       // Start these browsers, currently available:
       // - Chrome
       // - ChromeCanary
+      // - IE
       // - Firefox
       // - Opera
       // - Safari
       // - PhantomJS
       browsers: [
-        'Chrome'
+        'PhantomJS'
       ],
 
       // test results reporter to use

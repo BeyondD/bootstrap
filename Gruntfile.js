@@ -154,7 +154,7 @@ module.exports = function(grunt) {
       travis: {
         singleRun: true,
         reporters: ['dots'],
-        browsers: ['Firefox']
+        browsers: ['Chrome', 'Firefox', 'IE']
       },
       coverage: {
         preprocessors: {
