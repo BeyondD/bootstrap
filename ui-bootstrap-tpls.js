@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * https://github.com/BeyondD/bootstrap
 
- * Version: 0.12.0-ALZ - 2014-11-12
+ * Version: 0.12.0-ALZ - 2014-11-13
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
@@ -3163,6 +3163,7 @@ angular.module('ui.bootstrap.tabs', [])
     transclude: true,
     scope: {
       active: '=?',
+      disabled: '=?ngDisabled', // IE8 cannot bind to attrs.disabled, so ngDisabled may/should be used
       heading: '@',
       onSelect: '&select', //This callback is called in contentHeadingTransclude
                           //once it inserts the tab's content into the dom
@@ -3179,12 +3180,17 @@ angular.module('ui.bootstrap.tabs', [])
           }
         });
 
-        scope.disabled = false;
-        if ( attrs.disabled ) {
+        if ( attrs.disabled) {
           scope.$parent.$watch($parse(attrs.disabled), function(value) {
-            scope.disabled = !! value;
+            if(typeof(value) !== 'undefined') { // IE8 cannot bind to attrs.disabled and will parse as undefined
+              scope.disabled = !!value;
+            }
           });
         }
+
+        /*scope.$watch('disabled', function(value) {
+          scope.disabled = !!value;
+        });*/
 
         scope.select = function() {
           if ( !scope.disabled ) {

@@ -342,7 +342,7 @@ describe('accordion', function () {
     });
 
     // Will not pass IE8
-    xdescribe('accordion-heading element', function() {
+/*    describe('accordion-heading element', function() {
       beforeEach(function() {
         var tpl =
           '<accordion ng-init="a = [1,2,3]">' +
@@ -362,7 +362,7 @@ describe('accordion', function () {
         expect(findGroupLink(0).find('span').scope().$id).toBe(findGroupBody(0).find('span').scope().$id);
       });
 
-    });
+    });*/
 
     describe('accordion-heading attribute', function() {
       beforeEach(function() {
@@ -387,7 +387,7 @@ describe('accordion', function () {
     });
 
     // Will not pass IE8
-    xdescribe('accordion-heading, with repeating accordion-groups', function() {
+/*    describe('accordion-heading, with repeating accordion-groups', function() {
       it('should clone the accordion-heading for each group', function() {
         element = $compile('<accordion><accordion-group ng-repeat="x in [1,2,3]"><accordion-heading>{{x}}</accordion-heading></accordion-group></accordion>')(scope);
         scope.$digest();
@@ -397,8 +397,7 @@ describe('accordion', function () {
         expect(findGroupLink(1).text()).toBe('2');
         expect(findGroupLink(2).text()).toBe('3');
       });
-    });
-
+    });*/
 
     describe('accordion-heading attribute, with repeating accordion-groups', function() {
       it('should clone the accordion-heading for each group', function() {

@@ -149,7 +149,7 @@ module.exports = function(grunt) {
         singleRun: true,
         colors: false,
         reporters: ['dots', 'junit'],
-        browsers: ['Chrome', 'ChromeCanary', 'Firefox', 'Opera']
+        browsers: ['Chrome', 'ChromeCanary', 'Firefox', 'IE']
       },
       travis: {
         singleRun: true,
