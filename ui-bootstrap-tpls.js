@@ -2,11 +2,11 @@
  * angular-ui-bootstrap
  * https://github.com/BeyondD/bootstrap
 
- * Version: 0.12.0-ALZ - 2014-11-13
+ * Version: 0.12.0-ALZ - 2014-11-28
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
-angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/carousel/carousel.html","template/carousel/slide.html","template/datepicker/datepicker.html","template/datepicker/day.html","template/datepicker/month.html","template/datepicker/popup.html","template/datepicker/year.html","template/modal/backdrop.html","template/modal/window.html","template/pagination/pager.html","template/pagination/pagination.html","template/tooltip/tooltip-html-unsafe-popup.html","template/tooltip/tooltip-popup.html","template/popover/popover.html","template/progressbar/bar.html","template/progressbar/progress.html","template/progressbar/progressbar.html","template/rating/rating.html","template/tabs/tab.html","template/tabs/tabset.html","template/timepicker/timepicker.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html"]);
+angular.module("ui.bootstrap.tpls", ["template/accordion/accordion-group.html","template/accordion/accordion.html","template/alert/alert.html","template/carousel/carousel.html","template/carousel/slide.html","template/datepicker/datepicker.html","template/datepicker/day.html","template/datepicker/month.html","template/datepicker/popup.html","template/datepicker/year.html","template/modal/backdrop.html","template/modal/window.html","template/pagination/pager.html","template/pagination/pagination.html","template/tooltip/tooltip-html-unsafe-popup.html","template/tooltip/tooltip-popup.html","template/popover/popover-html-unsafe.html","template/popover/popover.html","template/progressbar/bar.html","template/progressbar/progress.html","template/progressbar/progressbar.html","template/rating/rating.html","template/tabs/tab.html","template/tabs/tabset.html","template/timepicker/timepicker.html","template/typeahead/typeahead-match.html","template/typeahead/typeahead-popup.html"]);
 angular.module('ui.bootstrap.transition', [])
 
 /**
@@ -867,14 +867,73 @@ angular.module('ui.bootstrap.position', [])
      * returns the closest, non-statically positioned parentOffset of a given element
      * @param element
      */
-    var parentOffsetEl = function (element) {
+    function parentOffsetEl(element) {
       var docDomEl = $document[0];
       var offsetParent = element.offsetParent || docDomEl;
       while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
         offsetParent = offsetParent.offsetParent;
       }
       return offsetParent || docDomEl;
-    };
+    }
+
+    function getWindowBounds() {
+      var windowSize = getWindowSize(),
+        scrollOffsets = getScrollOffsets();
+
+      return {
+        left: 0 + scrollOffsets.x,
+        right: (windowSize.innerWidth + scrollOffsets.x - 20), //-20 to avoid scrollbars
+        top: 0 + scrollOffsets.y,
+        bottom: (windowSize.innerHeight + scrollOffsets.y)
+      };
+    }
+
+    function getWindowSize() {
+      if('innerWidth' in $window){
+        return {
+          innerWidth: $window.innerWidth,
+          innerHeight: $window.innerHeight
+        };
+      }
+
+      // For browsers in Standards mode
+      if ( $document.compatMode === 'CSS1Compat' ) {
+        return {
+          innerWidth: $document.documentElement.clientWidth,
+          innerHeight: $document.documentElement.clientHeight
+        };
+      }
+
+      // For browsers in Quirks mode
+      return {
+        innerWidth: $document.body.clientWidth,
+        innerHeight: $document.body.clientHeight
+      };
+    }
+
+    function getScrollOffsets() {
+      // This works for all browsers except =< IE 8
+      if ('pageXOffset' in $window) {
+        return {
+          x: $window.pageXOffset,
+          y: $window.pageYOffset
+        };
+      }
+
+      // For browsers in Standards mode
+      if ( $document.compatMode === 'CSS1Compat' ) {
+        return {
+          x: $document.documentElement.scrollLeft,
+          y: $document.documentElement.scrollTop
+        };
+      }
+
+      // For browsers in Quirks mode
+      return {
+        x: $document.body.scrollLeft,
+        y: $document.body.scrollTop
+      };
+    }
 
     return {
       /**
@@ -918,19 +977,43 @@ angular.module('ui.bootstrap.position', [])
        * Provides coordinates for the targetEl in relation to hostEl
        */
       positionElements: function (hostEl, targetEl, positionStr, appendToBody) {
-
-        var positionStrParts = positionStr.split('-');
-        var pos0 = positionStrParts[0], pos1 = positionStrParts[1] || 'center';
-
         var hostElPos,
           targetElWidth,
           targetElHeight,
-          targetElPos;
+          targetElPos = {
+            top: 0,
+            left: 0,
+            placement: positionStr
+          };
+
+        if(!positionStr) {
+          return targetElPos;
+        }
+
+        var autoToken = /\s?auto?\s?/i;
+        var autoPlace = autoToken.test(positionStr);
+        if (autoPlace) { positionStr = positionStr.replace(autoToken, '') || 'top'; }
+        var positionStrParts = positionStr.split('-');
+        var pos0 = positionStrParts[0], pos1 = positionStrParts[1] || 'center';
 
         hostElPos = appendToBody ? this.offset(hostEl) : this.position(hostEl);
 
         targetElWidth = targetEl.prop('offsetWidth');
         targetElHeight = targetEl.prop('offsetHeight');
+
+        // based on Twitter Bootstrap's logic
+        if(autoPlace) {
+          var containerPos = getWindowBounds();
+          pos0 = (
+            pos0 == 'bottom'  && hostElPos.top + hostElPos.height + targetElHeight  > containerPos.bottom ? 'top' :
+            pos0 == 'top'     && hostElPos.top - targetElHeight                     < containerPos.top    ? 'bottom' :
+            pos0 == 'right'   && hostElPos.left + hostElPos.width + targetElWidth   > containerPos.right  ? 'left' :
+            pos0 == 'left'    && hostElPos.left - targetElWidth                     < containerPos.left   ? 'right' :
+            pos0
+          );
+
+          targetElPos.placement = pos0 + (pos1 !== 'center' ? '-' + pos1 : '') + ' auto';
+        }
 
         var shiftWidth = {
           center: function () {
@@ -958,28 +1041,20 @@ angular.module('ui.bootstrap.position', [])
 
         switch (pos0) {
           case 'right':
-            targetElPos = {
-              top: shiftHeight[pos1](),
-              left: shiftWidth[pos0]()
-            };
+            targetElPos.top = shiftHeight[pos1]();
+            targetElPos.left = shiftWidth[pos0]();
             break;
           case 'left':
-            targetElPos = {
-              top: shiftHeight[pos1](),
-              left: hostElPos.left - targetElWidth
-            };
+            targetElPos.top = shiftHeight[pos1]();
+            targetElPos.left = hostElPos.left - targetElWidth;
             break;
           case 'bottom':
-            targetElPos = {
-              top: shiftHeight[pos0](),
-              left: shiftWidth[pos1]()
-            };
+            targetElPos.top = shiftHeight[pos0]();
+            targetElPos.left = shiftWidth[pos1]();
             break;
           default:
-            targetElPos = {
-              top: hostElPos.top - targetElHeight,
-              left: shiftWidth[pos1]()
-            };
+            targetElPos.top = hostElPos.top - targetElHeight;
+            targetElPos.left = shiftWidth[pos1]();
             break;
         }
 
@@ -987,7 +1062,6 @@ angular.module('ui.bootstrap.position', [])
       }
     };
   }]);
-
 angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootstrap.position'])
 
 .constant('datepickerConfig', {
@@ -2527,9 +2601,9 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
         '<div '+ directiveName +'-popup '+
           'title="'+startSym+'title'+endSym+'" '+
           'content="'+startSym+'content'+endSym+'" '+
-          'placement="'+startSym+'placement'+endSym+'" '+
+          'placement="placement" '+
           'animation="animation" '+
-          'is-open="isOpen"'+
+          'is-open="isOpen" '+
           '>'+
         '</div>';
 
@@ -2548,15 +2622,39 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
             var hasEnableExp = angular.isDefined(attrs[prefix+'Enable']);
             var ttScope = scope.$new(true);
 
-            var positionTooltip = function () {
+            function getClasses() {
+              var classes = [];
+              if(ttScope.placement) {classes.push(ttScope.placement);}
+              if(ttScope.isOpen)    {classes.push('in');}
+              if(ttScope.animation) {classes.push('fade');}
+              return classes.join(' ');
+            }
 
+            var prevClasses;
+            function positionTooltip () {
               var ttPosition = $position.positionElements(element, tooltip, ttScope.placement, appendToBody);
-              ttPosition.top += 'px';
-              ttPosition.left += 'px';
 
               // Now set the calculated positioning.
-              tooltip.css( ttPosition );
-            };
+              tooltip.css({
+                top: ttPosition.top += 'px',
+                left: ttPosition.left += 'px'
+              });
+
+              // Update placement
+              ttScope.placement = ttPosition.placement;
+              if(prevClasses) {
+                tooltip.removeClass(prevClasses);
+              }
+              prevClasses = getClasses();
+              tooltip.addClass(prevClasses);
+            }
+
+            function onResize () {
+              if(ttScope && ttScope.isOpen) {
+                positionTooltip();
+              }
+            }
+            angular.element($window).bind('resize', onResize);
 
             // By default, the tooltip is not open.
             // TODO add ability to start tooltip opened
@@ -2616,7 +2714,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
               createTooltip();
 
               // Set the initial positioning.
-              tooltip.css({ top: 0, left: 0, display: 'block' });
+              tooltip.css({ top: '0px', left: '0px', display: 'block' });
 
               // Now we add it to the DOM because need some info about it. But it's not
               // visible yet anyway.
@@ -2663,6 +2761,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
               if (tooltip) {
                 removeTooltip();
               }
+
               tooltipLinkedScope = ttScope.$new();
               tooltip = tooltipLinker(tooltipLinkedScope);
             }
@@ -2710,10 +2809,10 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
               ttScope.popupDelay = ! isNaN(delay) ? delay : options.popupDelay;
             }
 
-            var unregisterTriggers = function () {
+            function unregisterTriggers () {
               element.unbind(triggers.show, showTooltipBind);
               element.unbind(triggers.hide, hideTooltipBind);
-            };
+            }
 
             function prepTriggers() {
               var val = attrs[ prefix + 'Trigger' ];
@@ -2741,14 +2840,15 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
             // by the change.
             if ( appendToBody ) {
               scope.$on('$locationChangeSuccess', function closeTooltipOnLocationChangeSuccess () {
-              if ( ttScope.isOpen ) {
-                hide();
-              }
-            });
+                if ( ttScope.isOpen ) {
+                  hide();
+                }
+              });
             }
 
             // Make sure tooltip is destroyed and removed.
             scope.$on('$destroy', function onDestroyTooltip() {
+              angular.element($window).bind('resize', onResize);
               $timeout.cancel( transitionTimeout );
               $timeout.cancel( popupTimeout );
               unregisterTriggers();
@@ -2766,7 +2866,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
   return {
     restrict: 'EA',
     replace: true,
-    scope: { content: '@', placement: '@', animation: '&', isOpen: '&' },
+    scope: { content: '@', placement: '&', animation: '&', isOpen: '&'},
     templateUrl: 'template/tooltip/tooltip-popup.html'
   };
 })
@@ -2779,7 +2879,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
   return {
     restrict: 'EA',
     replace: true,
-    scope: { content: '@', placement: '@', animation: '&', isOpen: '&' },
+    scope: { content: '@', placement: '&', animation: '&', isOpen: '&' },
     templateUrl: 'template/tooltip/tooltip-html-unsafe-popup.html'
   };
 })
@@ -2787,7 +2887,6 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
 .directive( 'tooltipHtmlUnsafe', [ '$tooltip', function ( $tooltip ) {
   return $tooltip( 'tooltipHtmlUnsafe', 'tooltip', 'mouseenter' );
 }]);
-
 /**
  * The following features are still outstanding: popup delay, animation as a
  * function, placement as a function, inside, support for more triggers than
@@ -2799,13 +2898,26 @@ angular.module( 'ui.bootstrap.popover', [ 'ui.bootstrap.tooltip' ] )
   return {
     restrict: 'EA',
     replace: true,
-    scope: { title: '@', content: '@', placement: '@', animation: '&', isOpen: '&' },
+    scope: { title: '@', content: '@', placement: '&', animation: '&', isOpen: '&' },
     templateUrl: 'template/popover/popover.html'
   };
 })
 
 .directive( 'popover', [ '$tooltip', function ( $tooltip ) {
   return $tooltip( 'popover', 'popover', 'click' );
+}])
+
+.directive( 'popoverHtmlUnsafePopup', function () {
+  return {
+    restrict: 'EA',
+    replace: true,
+    scope: { title: '@', content: '@', placement: '&', animation: '&', isOpen: '&' },
+    templateUrl: 'template/popover/popover-html-unsafe.html'
+  };
+})
+
+.directive( 'popoverHtmlUnsafe', [ '$tooltip', function ( $tooltip ) {
+  return $tooltip( 'popoverHtmlUnsafe', 'popover', 'click' );
 }]);
 
 angular.module('ui.bootstrap.progressbar', [])
@@ -4101,7 +4213,7 @@ angular.module("template/pagination/pagination.html", []).run(["$templateCache",
 
 angular.module("template/tooltip/tooltip-html-unsafe-popup.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/tooltip/tooltip-html-unsafe-popup.html",
-    "<div class=\"tooltip {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
+    "<div class=\"tooltip\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
     "  <div class=\"tooltip-arrow\"></div>\n" +
     "  <div class=\"tooltip-inner\" bind-html-unsafe=\"content\"></div>\n" +
     "</div>\n" +
@@ -4110,21 +4222,32 @@ angular.module("template/tooltip/tooltip-html-unsafe-popup.html", []).run(["$tem
 
 angular.module("template/tooltip/tooltip-popup.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/tooltip/tooltip-popup.html",
-    "<div class=\"tooltip {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
+    "<div class=\"tooltip\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
     "  <div class=\"tooltip-arrow\"></div>\n" +
     "  <div class=\"tooltip-inner\" ng-bind=\"content\"></div>\n" +
     "</div>\n" +
     "");
 }]);
 
+angular.module("template/popover/popover-html-unsafe.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/popover/popover-html-unsafe.html",
+    "<div class=\"popover\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
+    "  <div class=\"arrow\"></div>\n" +
+    "  <div class=\"popover-inner\">\n" +
+    "    <h3 class=\"popover-title\" ng-bind=\"title\" ng-show=\"title\"></h3>\n" +
+    "    <div class=\"popover-content\" bind-html-unsafe=\"content\"></div>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("template/popover/popover.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/popover/popover.html",
-    "<div class=\"popover {{placement}}\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
+    "<div class=\"popover\" ng-class=\"{ in: isOpen(), fade: animation() }\">\n" +
     "  <div class=\"arrow\"></div>\n" +
-    "\n" +
     "  <div class=\"popover-inner\">\n" +
-    "      <h3 class=\"popover-title\" ng-bind=\"title\" ng-show=\"title\"></h3>\n" +
-    "      <div class=\"popover-content\" ng-bind=\"content\"></div>\n" +
+    "    <h3 class=\"popover-title\" ng-bind=\"title\" ng-show=\"title\"></h3>\n" +
+    "    <div class=\"popover-content\" ng-bind=\"content\"></div>\n" +
     "  </div>\n" +
     "</div>\n" +
     "");

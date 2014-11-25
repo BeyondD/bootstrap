@@ -115,7 +115,7 @@ describe('tooltip', function() {
     expect( elm.attr( 'alt' ) ).toBe( scope.alt );
 
     ttScope = angular.element( elmBody.children()[1] ).isolateScope();
-    expect( ttScope.placement ).toBe( 'top' );
+    expect( scope.$eval(ttScope.placement) ).toBe( 'top' );
     expect( ttScope.content ).toBe( scope.tooltipMsg );
 
     elm.trigger( 'mouseleave' );
@@ -124,7 +124,7 @@ describe('tooltip', function() {
     elm.trigger( 'mouseenter' );
 
     ttScope = angular.element( elmBody.children()[1] ).isolateScope();
-    expect( ttScope.placement ).toBe( 'top' );
+    expect( scope.$eval(ttScope.placement) ).toBe( 'top' );
     expect( ttScope.content ).toBe( scope.tooltipMsg );
   }));
 

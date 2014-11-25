@@ -30,14 +30,73 @@ angular.module('ui.bootstrap.position', [])
      * returns the closest, non-statically positioned parentOffset of a given element
      * @param element
      */
-    var parentOffsetEl = function (element) {
+    function parentOffsetEl(element) {
       var docDomEl = $document[0];
       var offsetParent = element.offsetParent || docDomEl;
       while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
         offsetParent = offsetParent.offsetParent;
       }
       return offsetParent || docDomEl;
-    };
+    }
+
+    function getWindowBounds() {
+      var windowSize = getWindowSize(),
+        scrollOffsets = getScrollOffsets();
+
+      return {
+        left: 0 + scrollOffsets.x,
+        right: (windowSize.innerWidth + scrollOffsets.x - 20), //-20 to avoid scrollbars
+        top: 0 + scrollOffsets.y,
+        bottom: (windowSize.innerHeight + scrollOffsets.y)
+      };
+    }
+
+    function getWindowSize() {
+      if('innerWidth' in $window){
+        return {
+          innerWidth: $window.innerWidth,
+          innerHeight: $window.innerHeight
+        };
+      }
+
+      // For browsers in Standards mode
+      if ( $document.compatMode === 'CSS1Compat' ) {
+        return {
+          innerWidth: $document.documentElement.clientWidth,
+          innerHeight: $document.documentElement.clientHeight
+        };
+      }
+
+      // For browsers in Quirks mode
+      return {
+        innerWidth: $document.body.clientWidth,
+        innerHeight: $document.body.clientHeight
+      };
+    }
+
+    function getScrollOffsets() {
+      // This works for all browsers except =< IE 8
+      if ('pageXOffset' in $window) {
+        return {
+          x: $window.pageXOffset,
+          y: $window.pageYOffset
+        };
+      }
+
+      // For browsers in Standards mode
+      if ( $document.compatMode === 'CSS1Compat' ) {
+        return {
+          x: $document.documentElement.scrollLeft,
+          y: $document.documentElement.scrollTop
+        };
+      }
+
+      // For browsers in Quirks mode
+      return {
+        x: $document.body.scrollLeft,
+        y: $document.body.scrollTop
+      };
+    }
 
     return {
       /**
@@ -81,19 +140,43 @@ angular.module('ui.bootstrap.position', [])
        * Provides coordinates for the targetEl in relation to hostEl
        */
       positionElements: function (hostEl, targetEl, positionStr, appendToBody) {
-
-        var positionStrParts = positionStr.split('-');
-        var pos0 = positionStrParts[0], pos1 = positionStrParts[1] || 'center';
-
         var hostElPos,
           targetElWidth,
           targetElHeight,
-          targetElPos;
+          targetElPos = {
+            top: 0,
+            left: 0,
+            placement: positionStr
+          };
+
+        if(!positionStr) {
+          return targetElPos;
+        }
+
+        var autoToken = /\s?auto?\s?/i;
+        var autoPlace = autoToken.test(positionStr);
+        if (autoPlace) { positionStr = positionStr.replace(autoToken, '') || 'top'; }
+        var positionStrParts = positionStr.split('-');
+        var pos0 = positionStrParts[0], pos1 = positionStrParts[1] || 'center';
 
         hostElPos = appendToBody ? this.offset(hostEl) : this.position(hostEl);
 
         targetElWidth = targetEl.prop('offsetWidth');
         targetElHeight = targetEl.prop('offsetHeight');
+
+        // based on Twitter Bootstrap's logic
+        if(autoPlace) {
+          var containerPos = getWindowBounds();
+          pos0 = (
+            pos0 == 'bottom'  && hostElPos.top + hostElPos.height + targetElHeight  > containerPos.bottom ? 'top' :
+            pos0 == 'top'     && hostElPos.top - targetElHeight                     < containerPos.top    ? 'bottom' :
+            pos0 == 'right'   && hostElPos.left + hostElPos.width + targetElWidth   > containerPos.right  ? 'left' :
+            pos0 == 'left'    && hostElPos.left - targetElWidth                     < containerPos.left   ? 'right' :
+            pos0
+          );
+
+          targetElPos.placement = pos0 + (pos1 !== 'center' ? '-' + pos1 : '') + ' auto';
+        }
 
         var shiftWidth = {
           center: function () {
@@ -121,28 +204,20 @@ angular.module('ui.bootstrap.position', [])
 
         switch (pos0) {
           case 'right':
-            targetElPos = {
-              top: shiftHeight[pos1](),
-              left: shiftWidth[pos0]()
-            };
+            targetElPos.top = shiftHeight[pos1]();
+            targetElPos.left = shiftWidth[pos0]();
             break;
           case 'left':
-            targetElPos = {
-              top: shiftHeight[pos1](),
-              left: hostElPos.left - targetElWidth
-            };
+            targetElPos.top = shiftHeight[pos1]();
+            targetElPos.left = hostElPos.left - targetElWidth;
             break;
           case 'bottom':
-            targetElPos = {
-              top: shiftHeight[pos0](),
-              left: shiftWidth[pos1]()
-            };
+            targetElPos.top = shiftHeight[pos0]();
+            targetElPos.left = shiftWidth[pos1]();
             break;
           default:
-            targetElPos = {
-              top: hostElPos.top - targetElHeight,
-              left: shiftWidth[pos1]()
-            };
+            targetElPos.top = hostElPos.top - targetElHeight;
+            targetElPos.left = shiftWidth[pos1]();
             break;
         }
 
