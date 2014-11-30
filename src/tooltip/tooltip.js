@@ -261,7 +261,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
               }
 
               tooltipLinkedScope = ttScope.$new();
-              tooltip = tooltipLinker(tooltipLinkedScope);
+              tooltip = tooltipLinker(tooltipLinkedScope, angular.noop);
             }
 
             function removeTooltip() {
