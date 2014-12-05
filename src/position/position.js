@@ -60,17 +60,17 @@ angular.module('ui.bootstrap.position', [])
       }
 
       // For browsers in Standards mode
-      if ( $document.compatMode === 'CSS1Compat' ) {
+      if ( $document[0].compatMode === 'CSS1Compat' ) {
         return {
-          innerWidth: $document.documentElement.clientWidth,
-          innerHeight: $document.documentElement.clientHeight
+          innerWidth: $document[0].documentElement.clientWidth,
+          innerHeight: $document[0].documentElement.clientHeight
         };
       }
 
       // For browsers in Quirks mode
       return {
-        innerWidth: $document.body.clientWidth,
-        innerHeight: $document.body.clientHeight
+        innerWidth: $document[0].body.clientWidth,
+        innerHeight: $document[0].body.clientHeight
       };
     }
 
@@ -84,17 +84,17 @@ angular.module('ui.bootstrap.position', [])
       }
 
       // For browsers in Standards mode
-      if ( $document.compatMode === 'CSS1Compat' ) {
+      if ( $document[0].compatMode === 'CSS1Compat' ) {
         return {
-          x: $document.documentElement.scrollLeft,
-          y: $document.documentElement.scrollTop
+          x: $document[0].documentElement.scrollLeft,
+          y: $document[0].documentElement.scrollTop
         };
       }
 
       // For browsers in Quirks mode
       return {
-        x: $document.body.scrollLeft,
-        y: $document.body.scrollTop
+        x: $document[0].body.scrollLeft,
+        y: $document[0].body.scrollTop
       };
     }
 

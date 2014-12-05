@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * https://github.com/BeyondD/bootstrap
 
- * Version: 0.13.0-BYD - 2014-12-01
+ * Version: 0.13.0-BYD - 2014-12-05
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
@@ -897,17 +897,17 @@ angular.module('ui.bootstrap.position', [])
       }
 
       // For browsers in Standards mode
-      if ( $document.compatMode === 'CSS1Compat' ) {
+      if ( $document[0].compatMode === 'CSS1Compat' ) {
         return {
-          innerWidth: $document.documentElement.clientWidth,
-          innerHeight: $document.documentElement.clientHeight
+          innerWidth: $document[0].documentElement.clientWidth,
+          innerHeight: $document[0].documentElement.clientHeight
         };
       }
 
       // For browsers in Quirks mode
       return {
-        innerWidth: $document.body.clientWidth,
-        innerHeight: $document.body.clientHeight
+        innerWidth: $document[0].body.clientWidth,
+        innerHeight: $document[0].body.clientHeight
       };
     }
 
@@ -921,17 +921,17 @@ angular.module('ui.bootstrap.position', [])
       }
 
       // For browsers in Standards mode
-      if ( $document.compatMode === 'CSS1Compat' ) {
+      if ( $document[0].compatMode === 'CSS1Compat' ) {
         return {
-          x: $document.documentElement.scrollLeft,
-          y: $document.documentElement.scrollTop
+          x: $document[0].documentElement.scrollLeft,
+          y: $document[0].documentElement.scrollTop
         };
       }
 
       // For browsers in Quirks mode
       return {
-        x: $document.body.scrollLeft,
-        y: $document.body.scrollTop
+        x: $document[0].body.scrollLeft,
+        y: $document[0].body.scrollTop
       };
     }
 
@@ -2848,7 +2848,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
 
             // Make sure tooltip is destroyed and removed.
             scope.$on('$destroy', function onDestroyTooltip() {
-              angular.element($window).bind('resize', onResize);
+              angular.element($window).unbind('resize', onResize);
               $timeout.cancel( transitionTimeout );
               $timeout.cancel( popupTimeout );
               unregisterTriggers();
