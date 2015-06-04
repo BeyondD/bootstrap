@@ -122,6 +122,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
 
             function getClasses() {
               var classes = [];
+              if(attrs[prefix+'Classes'])  {classes.splice(0, 0, attrs[prefix+'Classes'].split(' '));}
               if(ttScope.placement) {classes.push(ttScope.placement);}
               if(ttScope.isOpen)    {classes.push('in');}
               if(ttScope.animation) {classes.push('fade');}

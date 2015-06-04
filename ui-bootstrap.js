@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * https://github.com/BeyondD/bootstrap
 
- * Version: 0.13.0-BYD - 2014-12-05
+ * Version: 0.13.0-BYD - 2015-06-04
  * License: MIT
  */
 angular.module("ui.bootstrap", ["ui.bootstrap.transition","ui.bootstrap.collapse","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.bindHtml","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.position","ui.bootstrap.datepicker","ui.bootstrap.dropdown","ui.bootstrap.modal","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
@@ -2623,6 +2623,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position', 'ui.bootstrap
 
             function getClasses() {
               var classes = [];
+              if(attrs[prefix+'Classes'])  {classes.splice(0, 0, attrs[prefix+'Classes'].split(' '));}
               if(ttScope.placement) {classes.push(ttScope.placement);}
               if(ttScope.isOpen)    {classes.push('in');}
               if(ttScope.animation) {classes.push('fade');}
